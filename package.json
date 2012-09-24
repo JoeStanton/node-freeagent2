@@ -4,7 +4,8 @@
   "description": "Node.js OAuth2 REST Library for use with the FreeAgent v2 API",
   "main": "lib/freeagent.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "cake test"
+    "prepublish": "cake build"
   },
   "repository": {
     "type": "git",
