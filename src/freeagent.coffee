@@ -8,7 +8,7 @@ authorizeUrl = baseUri + 'approve_app'
 tokenUrl = baseUri + 'token_endpoint'
 
 #try to use proxy if available
-proxyUrl = process.env.HTTPS_PROXY or process.env.https_proxy
+proxyUrl = "http://localhost:8888" #process.env.HTTPS_PROXY or process.env.https_proxy
 
 class FreeAgent
   constructor: (client_id, client_secret) ->
@@ -46,20 +46,19 @@ class FreeAgent
   _prepareHeaders : (access_token, options) ->
     options = {} if !options
     _.extend options,
-      Headers:
-        Accept: 'application/json'
-        Authorization: access_token
+      proxy: proxyUrl
+      headers:
+        'Accept': 'application/json'
+        'User-Agent' : 'BadgerTime' 
+        'Authorization': "Bearer #{access_token}"
 
   getProjects : (access_token, callback) ->
-    console.log 'Called getProjects with access_token: ' + access_token
-    request.get 
-    @_prepareHeaders access_token, 
-      uri: baseUri + 'projects'
-
-      (error, response) ->
-        unless error
-          callback null, response
-        else
-          callback error
+    request.get @_prepareHeaders(access_token,
+      uri: baseUri + "projects"
+    ), (error, response) ->
+      unless error or response.statusCode isnt 200
+        callback null, response
+      else
+        callback error
 
 module.exports = FreeAgent
