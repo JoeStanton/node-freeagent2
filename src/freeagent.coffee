@@ -7,8 +7,8 @@ baseUri = 'https://api.freeagent.com/v2/'
 authorizeUrl = baseUri + 'approve_app'
 tokenUrl = baseUri + 'token_endpoint'
 
-#try to use proxy if available
-proxyUrl = "http://localhost:8888" #process.env.HTTPS_PROXY or process.env.https_proxy
+#try to use proxy if one is available
+proxyUrl = process.env.HTTPS_PROXY or process.env.https_proxy
 
 class FreeAgent
   constructor: (client_id, client_secret) ->
@@ -49,15 +49,25 @@ class FreeAgent
       proxy: proxyUrl
       headers:
         'Accept': 'application/json'
-        'User-Agent' : 'BadgerTime' 
+        'User-Agent' : 'node-freeagent2'
         'Authorization': "Bearer #{access_token}"
 
+  getCompany: (access_token, callback) ->
+    @_getRequest access_token, 'company', null, callback
+
   getProjects : (access_token, callback) ->
+    @_getRequest access_token, 'projects', null, callback
+
+  _getRequest : (access_token, url, options, callback) ->
     request.get @_prepareHeaders(access_token,
-      uri: baseUri + "projects"
+      uri: baseUri + url + '?' + qs.stringify(options),
+      json: true 
     ), (error, response) ->
-      unless error or response.statusCode isnt 200
-        callback null, response
+      unless error
+        if response.statusCode is 200
+          callback null, response
+        else
+          callback new Error("#{response.statusCode} : {response.body}")
       else
         callback error
 
