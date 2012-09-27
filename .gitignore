@@ -16,6 +16,3 @@ npm-debug.log
 
 #Exclude compiled JS as it will be compiled when publishing to npm
 lib
-
-#Exclude sample project
-app
