@@ -24,7 +24,8 @@ class FreeAgent
         'Authorization': "Bearer #{access_token}"
 
   getCompany: (callback) ->
-    @_getRequest 'company', null, callback
+    @_getRequest 'company', null, (error, data) ->
+      callback error, data.company
 
   getProjects : (callback) ->
     @_getRequest 'projects', null, callback
