@@ -11,7 +11,7 @@ tokenUrl = baseUri + 'token_endpoint'
 proxyUrl = process.env.HTTPS_PROXY or process.env.https_proxy
 
 class FreeAgent
-  constructor: (@access_token) ->
+  constructor: (access_token) ->
     @access_token = access_token
 
   _prepareHeaders : (access_token, options) ->

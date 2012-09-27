@@ -41,15 +41,6 @@ util.inherits Strategy, OAuth2Strategy
 #
 #Retrieve user profile from FreeAgent.
 #
-#This function constructs a normalized profile, with the following properties:
-#
-#- `provider`         always set to `FreeAgent`
-#- `id`               the user's FreeAgent ID
-#- `username`         the user's FreeAgent username
-#- `displayName`      the user's full name
-#- `profileUrl`       the URL of the profile for the user on FreeAgent
-#- `emails`           the user's email addresses
-#
 #@param {String} accessToken
 #@param {Function} done
 #
@@ -62,7 +53,7 @@ Strategy::userProfile = (accessToken, done) ->
     return done(new InternalOAuthError("failed to fetch user profile", err))  if err
     try
       json = JSON.parse(body)
-      json.provider = "freeagent"
+      json.provider = "FreeAgent"
       return done(null, json.user)
     catch e
       return done(e)
