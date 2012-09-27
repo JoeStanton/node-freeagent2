@@ -30,8 +30,11 @@ class FreeAgent
     @_getRequest 'projects', null, callback
 
   _getRequest : (url, options, callback) ->
+    requestUri = baseUri + url
+    requestUri += '?' + qs.stringify(options) if options
+
     request.get @_prepareHeaders(@access_token,
-      uri: baseUri + url + '?' + qs.stringify(options),
+      uri: requestUri,
       json: true 
     ), (error, response) ->
       unless error
