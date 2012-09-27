@@ -21,10 +21,13 @@ InternalOAuthError = undefined
 OAuth2Strategy = undefined
 Strategy = undefined
 util = undefined
+
+baseUri = "https://api.sandbox.freeagent.com/v2/"
+
 Strategy = (options, verify) ->
   options = options or {}
-  options.authorizationURL = options.authorizationURL or "https://api.freeagent.com/v2/approve_app"
-  options.tokenURL = options.tokenURL or "https://api.freeagent.com/v2/token_endpoint"
+  options.authorizationURL = options.authorizationURL or baseUri + "approve_app"
+  options.tokenURL = options.tokenURL or baseUri + "token_endpoint"
   options.scopeSeparator = options.scopeSeparator or ","
   OAuth2Strategy.call this, options, verify
   @name = "freeagent"
@@ -45,7 +48,7 @@ util.inherits Strategy, OAuth2Strategy
 #@param {Function} done
 #
 Strategy::userProfile = (accessToken, done) ->
-  @_oauth2._request "GET", "https://api.freeagent.com/v2/users/me",
+  @_oauth2._request "GET", baseUri + "users/me",
     "User-Agent": "passport-freeagent2"
     "Authorization": "Bearer #{accessToken}"
   , null, accessToken, (err, body, res) ->
