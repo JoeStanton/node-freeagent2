@@ -3,16 +3,16 @@ crypto = require('crypto')
 qs = require('querystring')
 _ = require('underscore')
 
-baseUri = 'https://api.freeagent.com/v2/'
-authorizeUrl = baseUri + 'approve_app'
-tokenUrl = baseUri + 'token_endpoint'
-
 #try to use proxy if one is available
 proxyUrl = process.env.HTTPS_PROXY or process.env.https_proxy
 
 class FreeAgent
-  constructor: (access_token) ->
+  constructor: (access_token, sandboxMode) ->
     @access_token = access_token
+    if sandboxMode
+      baseUri = 'https://api.sandbox.freeagent.com/v2/'
+    else
+      baseUri = 'https://api.freeagent.com/v2/'
 
   _prepareHeaders : (access_token, options) ->
     options = {} if !options
