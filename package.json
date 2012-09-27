@@ -20,5 +20,12 @@
     "Resourcing"
   ],
   "author": "Joe Stanton (Red Badger Consulting Ltd.)",
-  "license": "BSD"
+  "license": "BSD",
+  
+  "dependencies": {
+    "underscore": "1.3.x",
+    "request": "2.11.x",
+    "querystring": "0.1.x",
+    "passport-oauth": "0.1.x",
+  }
 }
