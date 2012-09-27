@@ -36,10 +36,10 @@ class FreeAgent
     request.get @_prepareHeaders(@access_token,
       uri: requestUri,
       json: true 
-    ), (error, response) ->
+    ), (error, response, body) ->
       unless error
         if response.statusCode is 200
-          callback null, response
+          callback null, body
         else
           callback new Error("#{response.statusCode} : {response.body}")
       else
