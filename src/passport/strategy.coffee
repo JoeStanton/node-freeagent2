@@ -22,7 +22,7 @@ OAuth2Strategy = undefined
 Strategy = undefined
 util = undefined
 
-baseUri = "https://api.sandbox.freeagent.com/v2/"
+baseUri = "https://api.freeagent.com/v2/"
 
 Strategy = (options, verify) ->
   options = options or {}
