@@ -26,7 +26,6 @@ class FreeAgent
 
   #Get Request Mechanism
   _getRequest : (url, options, callback) ->
-    throw new Error "No callback defined!" unless callback
     requestUri = @baseUri + url
     requestUri += '?' + qs.stringify(options) if options
 
@@ -42,43 +41,58 @@ class FreeAgent
       else
         callback error
   
+  _processParams : (optionsOrCallback, callback) ->
+    if typeof optionsOrCallback is 'function'
+      options: null
+      callback: optionsOrCallback
+    else
+      if callback
+        options: optionsOrCallback
+        callback: callback
+      else
+        throw new Error "No callback defined!"
+
   #Company
   getCompany: (optionsOrCallback, callback) ->
-    #How can this be written better?
-    if typeof optionsOrCallback is 'function' 
-      callback = optionsOrCallback
-    else 
-      options = optionsOrCallback
-
-    @_getRequest 'company', null, (error, data) ->
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'company', params.options, (error, data) ->
       if not error and data and data.company
-        callback null, data.company
+        params.callback null, data.company
       else
-        callback error
+        params.callback error
 
   #Projects
   getProjects : (optionsOrCallback, callback) ->
-    @_getRequest 'projects', null, callback
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'projects', params.options, params.callback
 
   getProjectWithId : (projectUri, optionsOrCallback, callback) ->
-    @_getRequest 'projects/' + projectUri, null, callback
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'projects/' + projectUri, params.options, params.callback
 
   getTasksForProject : (projectUri, optionsOrCallback, callback) ->
-    @_getRequest 'tasks/' + projectUri, null, callback
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'tasks/' + projectUri, params.options, params.callback
 
   #Users
   getUsers : (optionsOrCallback, callback) ->
-    @_getRequest 'users', null, callback
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'users', params.options, params.callback
 
   #Timesheets
   getTimeslips : (optionsOrCallback, callback) ->
-    @_getRequest 'timeslips', null, callback
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'timeslips', params.options, params.callback
 
   #Invoices
   getInvoices : (optionsOrCallback, callback) ->
-    @_getRequest 'invoices', null, callback
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'invoices', params.options, params.callback
 
   getInvoicesForProject : (projectUri, optionsOrCallback, callback) ->
-    @_getRequest 'invoices', project: projectUri, callback
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'invoices', 
+      _.extend params.options, project: projectUri
+      params.callback
 
 module.exports = FreeAgent

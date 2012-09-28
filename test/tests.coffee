@@ -28,6 +28,29 @@ describe 'when constructing an authenticated get request to the sandbox API', ->
   it 'should set the request URI correctly', -> 
     request.uri.href.should.equal 'https://api.sandbox.freeagent.com/v2/example/endpoint'
 
+describe 'when requesting any endpoint via a wrapper method, with an invalid/empty callback', ->
+  freeagentApi = new Api 'ACCESS_TOKEN'
+
+  it 'should throw an error', -> 
+    -> freeagentApi.getProjects()
+    .should.throw 'No callback defined!'
+
+describe 'when requesting any endpoint via a wrapper method, with a callback and some empty options', ->
+  freeagentApi = new Api 'ACCESS_TOKEN'
+  callbackInvoked = false
+
+  mockRequest = nock('https://api.freeagent.com/').get('/v2/projects').reply(200, '')
+  request = freeagentApi.getProjects () -> 
+    callbackInvoked = true
+    mockRequest.done()
+    done()
+
+  it 'should not add any options to the query string', -> 
+    request.uri.href.should.equal 'https://api.freeagent.com/v2/projects'
+
+  it 'should invoke the callback', ->
+    callbackInvoked.should.be.true
+
 describe 'when making any request', ->
   freeagentApi = new Api('ACCESS_TOKEN')
 
