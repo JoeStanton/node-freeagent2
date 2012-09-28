@@ -51,6 +51,16 @@ describe 'when requesting any endpoint via a wrapper method, with a callback and
   it 'should invoke the callback', ->
     callbackInvoked.should.be.true
 
+describe 'when requesting any endpoint via a wrapper method, with options and a callback', ->
+  freeagentApi = new Api 'ACCESS_TOKEN'
+  request = freeagentApi.getProjects 
+    option1: 'value1' 
+    option2: 'value2'
+  , () ->
+
+  it 'should add the options to the query string', -> 
+    request.uri.href.should.equal 'https://api.freeagent.com/v2/projects?option1=value1&option2=value2'
+
 describe 'when making any request', ->
   freeagentApi = new Api('ACCESS_TOKEN')
 
