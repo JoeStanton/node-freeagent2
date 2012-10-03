@@ -1,0 +1,1 @@
+echo "The build passed! Will deploy."

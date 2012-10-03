@@ -1,0 +1,1 @@
+echo "The build failed! Won't deploy."
