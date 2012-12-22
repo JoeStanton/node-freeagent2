@@ -5,7 +5,7 @@ Node.js OAuth2 REST Library for use with the FreeAgent v2 API. It provides a ver
 
 Includes a passport strategy for plugging into the node-passport authentication library.  
 
-**This library is work in progress**
+**Note: This library provides a foundation for interacting with the REST API but is not complete.**
 
 ##Install
 
