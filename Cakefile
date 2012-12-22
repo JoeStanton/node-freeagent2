@@ -115,7 +115,7 @@ build = (watch, callback) ->
   options = ['-c', '-o' ]
   options = options.concat files
   options.unshift '-w' if watch
-  launch './node_modules/.bin/coffee', options, callback
+  launch 'coffee', options, callback
 
 # ## *unlinkIfCoffeeFile*
 #
@@ -154,11 +154,10 @@ clean = (callback) ->
 # **and* return false if not found
 moduleExists = (name) ->
   try 
-    require name 
+    require name
   catch err 
     log "#{name} required: npm install #{name}", red
     false
-
 
 # ## *mocha*
 #
@@ -182,18 +181,18 @@ mocha = (options, callback) ->
   options.push '--compilers'
   options.push 'coffee:coffee-script'
 
-  launch 'mocha', options, callback
+  launch './node_modules/.bin/mocha', options, callback
 
 lint = (options, callback) ->
-  #if moduleExists('coffeelint')
-  if typeof options is 'function'
-    callback = options
-    options = []
+  if moduleExists('coffeelint')
+    if typeof options is 'function'
+      callback = options
+      options = []
 
-  options.push '-r'
-  options.push 'src/'
-  
-  launch './node_modules/.bin/coffeelint', options, callback
+    options.push '-r'
+    options.push 'src/'
+    
+    launch './node_modules/.bin/coffeelint', options, callback
 
 # ## *docco*
 #
