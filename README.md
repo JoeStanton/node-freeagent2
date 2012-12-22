@@ -1,4 +1,4 @@
-Node-FreeAgent2
+Node-FreeAgent2 [![Build Status](https://travis-ci.org/JoeStanton/Node-FreeAgent2.png)](https://travis-ci.org/JoeStanton/Node-FreeAgent2)
 ===============
 
 Node.js OAuth2 REST Library for use with the FreeAgent v2 API. 
