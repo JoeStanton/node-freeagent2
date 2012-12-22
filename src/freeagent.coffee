@@ -31,7 +31,7 @@ class FreeAgent
 
     request.get @_prepareHeaders(@access_token,
       uri: requestUri,
-      json: true 
+      json: true
     ), (error, response, body) ->
       unless error
         if response.statusCode < 400
@@ -50,9 +50,9 @@ class FreeAgent
         options: optionsOrCallback
         callback: callback
       else
-        throw new Error "No callback defined!"
+        throw new Error 'No callback defined!'
 
-  refreshToken = (refresh_token, client_id, client_secret) ->
+  refreshToken = (refresh_token, client_id, client_secret, callback) ->
     request.post
       url: @baseUri + 'token_endpoint'
       headers:
@@ -65,9 +65,9 @@ class FreeAgent
     , (error, response, body) ->
       if not error and response and response.access_token
         @access_token = body.access_token
-        params.callback null, body.access_token
+        callback null, body.access_token
       else
-        params.callback error
+        callback error
 
   #Company
   getCompany: (optionsOrCallback, callback) ->
@@ -108,7 +108,7 @@ class FreeAgent
 
   getInvoicesForProject : (projectUri, optionsOrCallback, callback) ->
     params = @_processParams optionsOrCallback, callback
-    @_getRequest 'invoices', 
+    @_getRequest 'invoices',
       _.extend params.options, project: projectUri
       params.callback
 

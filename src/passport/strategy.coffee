@@ -22,19 +22,19 @@ OAuth2Strategy = undefined
 Strategy = undefined
 util = undefined
 
-baseUri = "https://api.freeagent.com/v2/"
+baseUri = 'https://api.freeagent.com/v2/'
 
 Strategy = (options, verify) ->
   options = options or {}
-  options.authorizationURL = options.authorizationURL or baseUri + "approve_app"
-  options.tokenURL = options.tokenURL or baseUri + "token_endpoint"
-  options.scopeSeparator = options.scopeSeparator or ","
+  options.authorizationURL = options.authorizationURL or baseUri + 'approve_app'
+  options.tokenURL = options.tokenURL or baseUri + 'token_endpoint'
+  options.scopeSeparator = options.scopeSeparator or ','
   OAuth2Strategy.call this, options, verify
-  @name = "freeagent"
+  @name = 'freeagent'
 
-util = require("util")
-OAuth2Strategy = require("passport-oauth").OAuth2Strategy
-InternalOAuthError = require("passport-oauth").InternalOAuthError
+util = require 'util'
+OAuth2Strategy = require('passport-oauth').OAuth2Strategy
+InternalOAuthError = require('passport-oauth').InternalOAuthError
 
 #
 #Inherit from `OAuth2Strategy`.
@@ -48,18 +48,19 @@ util.inherits Strategy, OAuth2Strategy
 #@param {Function} done
 #
 Strategy::userProfile = (accessToken, done) ->
-  @_oauth2._request "GET", baseUri + "users/me",
-    "User-Agent": "passport-freeagent2"
-    "Authorization": "Bearer #{accessToken}"
+  @_oauth2._request 'GET', baseUri + 'users/me',
+    'User-Agent': 'passport-freeagent2'
+    'Authorization': "Bearer #{accessToken}"
   , null, accessToken, (err, body, res) ->
-    json = undefined
-    return done(new InternalOAuthError("failed to fetch user profile", err))  if err
-    try
-      json = JSON.parse(body)
-      json.provider = "FreeAgent"
-      return done(null, json.user)
-    catch e
-      return done(e)
+    unless err
+      try
+        json = JSON.parse body
+        json.provider = 'FreeAgent'
+        done null, json.user
+      catch e
+        done e
+    else
+      done new InternalOAuthError('failed to fetch user profile', err)
 
 #
 #Expose `Strategy`.
