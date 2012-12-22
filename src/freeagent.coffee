@@ -52,6 +52,23 @@ class FreeAgent
       else
         throw new Error "No callback defined!"
 
+  refreshToken = (refresh_token, client_id, client_secret) ->
+    request.post
+      url: @baseUri + 'token_endpoint'
+      headers:
+        'Accept': 'application/json'
+        'User-Agent' : 'node-freeagent2'
+        'Authorization': 'Basic ' + new Buffer("#{client_id}:#{client_secret}").toString('base64')
+      json:
+        grant_type: 'refresh_token'
+        refresh_token: refresh_token
+    , (error, response, body) ->
+      if not error and response and response.access_token
+        @access_token = body.access_token
+        params.callback null, body.access_token
+      else
+        params.callback error
+
   #Company
   getCompany: (optionsOrCallback, callback) ->
     params = @_processParams optionsOrCallback, callback
