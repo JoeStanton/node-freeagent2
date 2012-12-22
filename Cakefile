@@ -115,7 +115,7 @@ build = (watch, callback) ->
   options = ['-c', '-o' ]
   options = options.concat files
   options.unshift '-w' if watch
-  launch 'coffee', options, callback
+  launch './node_modules/.bin/coffee', options, callback
 
 # ## *unlinkIfCoffeeFile*
 #
@@ -170,7 +170,7 @@ mocha = (options, callback) ->
   if typeof options is 'function'
     callback = options
     options = []
-    
+
   # run unit tests
   options.push 'test'
   options.push '--recursive'
@@ -193,7 +193,7 @@ lint = (options, callback) ->
   options.push '-r'
   options.push 'src/'
   
-  launch 'coffeelint', options, callback
+  launch './node_modules/.bin/coffeelint', options, callback
 
 # ## *docco*
 #
