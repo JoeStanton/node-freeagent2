@@ -2,13 +2,13 @@
 # 
 # It comes baked in with 5 tasks:
 #
-# * build - compiles your src directory to your app directory
-# * watch - watches any changes in your src directory and automatically compiles to the app directory
+# * build - compiles your src directory to your lib directory
+# * watch - watches any changes in your src directory and automatically compiles to the lib directory
 # * test  - runs mocha test framework, you can edit this task to use your favorite test framework
 # * docs  - generates annotated documentation using docco
 # * clean - clean generated .js files
 files = [
-  'app'
+  'lib'
   'src'
 ]
 
@@ -30,7 +30,7 @@ reset = '\x1b[0m'
 red = '\x1b[0;31m'
 
 # Cakefile Tasks
-task 'build', 'compile source', -> build -> log "Compiled CoffeeScript source from /src -> /app", green
+task 'build', 'compile source', -> build -> log "Compiled CoffeeScript source from /src -> /lib", green
 
 task 'watch', 'compile and watch', -> build true, -> log "Changes Detected.", green
 
@@ -170,15 +170,12 @@ mocha = (options, callback) ->
   if typeof options is 'function'
     callback = options
     options = []
-  # run compiled unit tests
-  process.chdir './app'
+  # run unit tests
   options.push 'test'
   options.push '--recursive'
   options.push '-c' #enable colors
   options.push '-R' #specify reporter
   options.push 'spec' #use the 'spec' reporter
-  options.push '-t'
-  options.push '10000' #globally set the timeout to 5 seconds
 
   launch 'mocha', options, callback
 
