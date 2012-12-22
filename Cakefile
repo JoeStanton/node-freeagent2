@@ -170,12 +170,17 @@ mocha = (options, callback) ->
   if typeof options is 'function'
     callback = options
     options = []
+    
   # run unit tests
   options.push 'test'
   options.push '--recursive'
   options.push '-c' #enable colors
   options.push '-R' #specify reporter
   options.push 'spec' #use the 'spec' reporter
+
+  #compile the tests from coffeescript
+  options.push '--compilers'
+  options.push 'coffee:coffee-script'
 
   launch 'mocha', options, callback
 
