@@ -1,25 +1,14 @@
-{spawn} = require 'child_process'
-{print} = require 'util'
-
-compile = (callback) ->
-coffee = spawn 'coffee', ['-c', '-o', 'lib', 'src']
-coffee.stderr.on 'data', (data) -> print data.toString()
-coffee.stdout.on 'data', (data) -> print data.toString()
-coffee.on 'exit', (code) -> callback?() if code is 0
-
-task 'build', 'Build lib/ from src/', ->
-compile()
 # ** Cakefile Template ** is a Template for a common Cakefile that you may use in a coffeescript nodejs project.
 # 
 # It comes baked in with 5 tasks:
 #
-# * build - compiles your src directory to your lib directory
-# * watch - watches any changes in your src directory and automatically compiles to the lib directory
+# * build - compiles your src directory to your app directory
+# * watch - watches any changes in your src directory and automatically compiles to the app directory
 # * test  - runs mocha test framework, you can edit this task to use your favorite test framework
 # * docs  - generates annotated documentation using docco
 # * clean - clean generated .js files
 files = [
-  'lib'
+  'app'
   'src'
 ]
 
@@ -41,12 +30,13 @@ reset = '\x1b[0m'
 red = '\x1b[0;31m'
 
 # Cakefile Tasks
-
-task 'build', 'compile source', -> build -> log "Compiled CoffeeScript source from /src -> /lib", green
+task 'build', 'compile source', -> build -> log "Compiled CoffeeScript source from /src -> /app", green
 
 task 'watch', 'compile and watch', -> build true, -> log "Changes Detected.", green
 
 task 'test', 'run tests', -> build -> mocha -> log "Ran Tests", green
+
+task 'lint', 'run coffeelint', -> lint -> log 'Finished linting.', green
 
 task 'clean', 'clean generated files', -> clean -> log "Cleaned Directory", green
 
@@ -105,7 +95,11 @@ launch = (cmd, options=[], callback) ->
   app = spawn cmd, options
   app.stdout.pipe(process.stdout)
   app.stderr.pipe(process.stderr)
-  app.on 'exit', (status) -> callback?() if status is 0
+  app.on 'exit', (status) ->
+    if status isnt 0
+      process.exit(status)
+    else
+      callback?()
 
 # ## *build*
 #
@@ -118,7 +112,7 @@ build = (watch, callback) ->
     callback = watch
     watch = false
 
-  options = ['-c', '-b', '-o' ]
+  options = ['-c', '-o' ]
   options = options.concat files
   options.unshift '-w' if watch
   launch 'coffee', options, callback
@@ -176,11 +170,28 @@ mocha = (options, callback) ->
   if typeof options is 'function'
     callback = options
     options = []
-  # add coffee directive
-  options.push '--compilers'
-  options.push 'coffee:coffee-script'
-  
+  # run compiled unit tests
+  process.chdir './app'
+  options.push 'test'
+  options.push '--recursive'
+  options.push '-c' #enable colors
+  options.push '-R' #specify reporter
+  options.push 'spec' #use the 'spec' reporter
+  options.push '-t'
+  options.push '10000' #globally set the timeout to 5 seconds
+
   launch 'mocha', options, callback
+
+lint = (options, callback) ->
+  #if moduleExists('coffeelint')
+  if typeof options is 'function'
+    callback = options
+    options = []
+
+  options.push '-r'
+  options.push 'src/'
+  
+  launch 'coffeelint', options, callback
 
 # ## *docco*
 #
@@ -189,4 +200,3 @@ mocha = (options, callback) ->
 docco = (callback) ->
   #if moduleExists('docco')
   walk 'src', (err, files) -> launch 'docco', files, callback
-
