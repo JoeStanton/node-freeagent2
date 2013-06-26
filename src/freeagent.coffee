@@ -52,7 +52,7 @@ class FreeAgent
       else
         throw new Error 'No callback defined!'
 
-  refreshToken = (refresh_token, client_id, client_secret, callback) ->
+  refreshToken : (refresh_token, client_id, client_secret, callback) ->
     request.post
       url: @baseUri + 'token_endpoint'
       headers:
@@ -63,14 +63,14 @@ class FreeAgent
         grant_type: 'refresh_token'
         refresh_token: refresh_token
     , (error, response, body) ->
-      if not error and response and response.access_token
+      if not error and response and body.access_token
         @access_token = body.access_token
         callback null, body.access_token
       else
         callback error
 
   #Company
-  getCompany: (optionsOrCallback, callback) ->
+  getCompany : (optionsOrCallback, callback) ->
     params = @_processParams optionsOrCallback, callback
     @_getRequest 'company', params.options, (error, data) ->
       if not error and data and data.company
