@@ -47,7 +47,7 @@ class FreeAgent
 
     request.post @_prepareHeaders(@access_token,
       uri: requestUri,
-      # body: data,
+      body: data,
       json: true
     ), (error, response, body) ->
       unless error
