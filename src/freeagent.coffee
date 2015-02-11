@@ -37,10 +37,27 @@ class FreeAgent
         if response.statusCode < 400
           callback null, body
         else
-          callback new Error("#{response.statusCode} : #{body}")
+          callback new Error("#{response.statusCode} : #{body.errors.error.message}")
       else
         callback error
-  
+
+  #Post Request Mechanism
+  _postRequest : (url, data, callback) ->
+    requestUri = @baseUri + url
+
+    request.post @_prepareHeaders(@access_token,
+      uri: requestUri,
+      # body: data,
+      json: true
+    ), (error, response, body) ->
+      unless error
+        if response.statusCode < 400
+          callback null, body
+        else
+          callback new Error("#{response.statusCode} : #{body.errors.error.message}")
+      else
+        callback error
+
   _processParams : (optionsOrCallback, callback) ->
     if typeof optionsOrCallback is 'function'
       options: null
@@ -111,5 +128,31 @@ class FreeAgent
     @_getRequest 'invoices',
       _.extend params.options, project: projectUri
       params.callback
+
+  getExpenses : (optionsOrCallback, callback) ->
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'expenses', params.options, params.callback
+
+  createExpense : (optionsOrCallback, callback) ->
+    params = @_processParams optionsOrCallback, callback
+    @_postRequest 'expenses', params.options, params.callback
+
+  getCurrentUser : (optionsOrCallback, callback) ->
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'users/me', params.options, params.callback
+
+  getOpenBills : (optionsOrCallback, callback) ->
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'bills',
+      view: 'open',
+      params.callback
+
+  getContacts : (optionsOrCallback, callback) ->
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'contacts', params.options, params.callback
+
+  getCategories : (optionsOrCallback, callback) ->
+    params = @_processParams optionsOrCallback, callback
+    @_getRequest 'categories', params.options, params.callback
 
 module.exports = FreeAgent
